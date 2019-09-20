@@ -24,9 +24,9 @@ function buildMetadata(station) {
 }
 
 
-function buildCharts(station) {
+function buildLineChart(station) {
   // TO DO: Iterate through all states
-  var url = `/stations/${station}`
+  var url = `/total/${station}`
   d3.json(url).then(function(data) {     
       // Build line chart
       var x= data.year;
@@ -37,7 +37,7 @@ function buildCharts(station) {
               x: x,
               y: y,
               text: values,
-              mode: 'lines'
+              mode: 'line'
           };
       var data = [trace1];
 
@@ -46,8 +46,52 @@ function buildCharts(station) {
           xaxis: { title: "Year"},
           yaxis: { title: "Average Ridership over the years"}
       };
-      Plotly.newPlot("line", data, layout);        
+      Plotly.newPlot("line", data, layout, {responsive: true});        
   });
+}
+
+function buildBarChart(station) {
+  var url = `/station/${station}`
+  d3.json(url).then(function(data) {       
+    var x= data.year; 
+    var y_weekday= data.weekday_ridership;
+    var y_saturday = data.saturday_ridership;
+    var y_sunday = data.sunday_ridership;    
+    var values= data.year;
+
+    var trace1 = {
+            x: x,
+            y: y_weekday,
+            text: values,
+            type: 'bar',
+            name: "Weekday Average Ridership"
+    };
+        var trace2 = {
+          x: x,
+          y: y_saturday,
+          text: values,
+          type: 'bar',
+          name: "Saturday Average Ridership"          
+      };
+
+      var trace3 = {
+        x: x,
+        y: y_sunday,
+        text: values,
+        type: 'bar',
+        name: "Sunday/Holiday Average Ridership"        
+    };      
+      var data = [trace1, trace2, trace3];
+
+      var layout = {
+          title: `${station} Ridership Data`,
+          xaxis: { title: "Year"},
+          yaxis: { title: "Average Ridership over the years"},
+          barmode: 'stack'
+      };
+      Plotly.newPlot("bar", data, layout);        
+    });
+
 }
 
 function init() {      
@@ -68,14 +112,16 @@ function init() {
   // Use the first sample from the list to build the initial plots
   const firstStation = stationNames[0];
   buildMetadata(firstStation);
-  buildCharts(firstStation);
+  buildLineChart(firstStation);
+  buildBarChart(firstStation);
   });
 }
 
 function optionChanged(newStation) {
   // Fetch new data each time a new state is selected
   buildMetadata(newStation);
-  buildCharts(newStation);
+  buildLineChart(newStation);
+  buildBarChart(newStation);
 }
 
 init();
