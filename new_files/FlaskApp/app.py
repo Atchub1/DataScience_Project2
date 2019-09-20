@@ -2,7 +2,7 @@ import os
 
 import pandas as pd
 import numpy as np
-
+import math as math
 import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
@@ -80,12 +80,13 @@ def total_ridership(station):
     ridership_data = df.loc[df['Station_Name'] == station]
 
     years = list(df.columns)[3:]
-
+    
     ridership = ridership_data.values[0][3:]
-
+    ridershipnona = [0 if math.isnan(x) else x for x in ridership]
+   
     data = {
         'year': years,
-        'ridership': ridership.tolist()
+        'ridership': ridershipnona
     }
 
     return jsonify(data)
@@ -103,6 +104,7 @@ def daily_ridership(station):
     years = list(weekday_df.columns)[3:]
 
     weekday_ridership = weekday_ridership_data.values[0][3:]
+    weekday_ridershipnona = [0 if math.isnan(x) else x for x in weekday_ridership]
 
     # Saturday Data 
 
@@ -113,7 +115,8 @@ def daily_ridership(station):
     saturday_ridership_data = saturday_df.loc[saturday_df['Station_Name'] == station]
 
     saturday_ridership = saturday_ridership_data.values[0][3:]
-
+    saturday_ridershipnona = [0 if math.isnan(x) else x for x in saturday_ridership]
+    print(saturday_ridershipnona)
     # Sunday Holiday Data 
 
     stmt_sunday = db.session.query(Sunday_Data).statement
@@ -123,13 +126,13 @@ def daily_ridership(station):
     sunday_ridership_data = sunday_df.loc[sunday_df['Station_Name'] == station]
 
     sunday_ridership = sunday_ridership_data.values[0][3:]
-
+    sunday_ridershipnona = [0 if math.isnan(x) else x for x in sunday_ridership]
 
     data = {
         'year': years,
-        'weekday_ridership': weekday_ridership.tolist(),
-        'saturday_ridership': saturday_ridership.tolist(),
-        'sunday_ridership': sunday_ridership.tolist()        
+        'weekday_ridership': weekday_ridershipnona,
+        'saturday_ridership': saturday_ridershipnona,
+        'sunday_ridership': sunday_ridershipnona       
     }
 
     return jsonify(data)
