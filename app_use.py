@@ -7,6 +7,7 @@ import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
 
 from flask import Flask, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
@@ -18,35 +19,51 @@ app = Flask(__name__)
 # Database Setup
 #################################################
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///cta.db"
-db = SQLAlchemy(app)
+# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///cta.db"
+# db = SQLAlchemy(app)
+# engine = create_engine('sqlite:///cta.db')
 
-# reflect an existing database into a new model
-Base = automap_base()
-# reflect the tables
-Base.prepare(db.engine, reflect=True)
+# # reflect an existing database into a new model
+# Base = automap_base()
+# # reflect the tables
+# # Base.prepare(db.engine, reflect=True)
+# Base.prepare(engine, reflect=True)
 
-# Save references to each table
-Daily_ridership = Base.classes.daily_ridership
-# Samples = Base.classes.samples
+# # Save references to each table
+# # daily_ridership = Base.classes.daily_ridership
+
+Base = declarative_base()
+engine = create_engine('sqlite:///cta.db')
+Base.metadata.create_all(engine)
+
+conn = engine.connect()
+Base.metadata.create_all(engine)
+
+session = Session(bind=engine)
+
 
 
 @app.route("/")
 def index():
     """Return the homepage."""
+    print(engine.execute("SELECT * FROM daily_ridership").fetchall())
     return render_template("index.html")
+    
 
 
-@app.route("/names")
+@app.route("/stations")
 def names():
     """Return a list of station names."""
+    print(session.query(stationname FROM daily_ridership"))
+
 
     # Use Pandas to perform the sql query
-    stations = db.session.query(stationname).statement
-    df = pd.read_sql_query(stations, db.session.bind)
+    # stations = db.session.query(daily_ridership).stationname
+    # df = pd.read_sql_query(stations, db.session.bind)
+
 
     # Return a list of the column names (sample names)
-    return jsonify(list(df.columns)[2:])
+    # return jsonify(list(df.columns)[2:])
 
 
 # @app.route("/metadata/<sample>")
