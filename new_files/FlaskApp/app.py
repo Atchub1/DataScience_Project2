@@ -18,17 +18,6 @@ from sqlalchemy.ext.declarative import declarative_base
 #################################################
 # Database Setup
 #################################################
-
-# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db/ridership_data.sqlite"
-# db = SQLAlchemy(app)
-
-# # reflect an existing database into a new model
-# Base = automap_base()
-# # reflect the tables
-# Base.prepare(db.engine, reflect=True)
-# print(Base.metadata.tables.keys())
-# Save references to each table
-
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:postgres@:5432/CTA"
 db = SQLAlchemy(app)
 
@@ -36,6 +25,8 @@ db = SQLAlchemy(app)
 Base = automap_base()
 # reflect the tables
 Base.prepare(db.engine, reflect=True)
+
+#
 # session = Session(engine)
 
 # Save references to each table
@@ -50,39 +41,31 @@ def index():
     return render_template("index.html")
 
 
-# @app.route("/")
-# def index():
-#     """Return the homepage."""
-#     return render_template("index.html")
-
-
-@app.route("/years/<year>")
-def ridership_by_year(year):
+@app.route("/metadata/<station>")
+def station_metadata(station):
+    """Return the MetaData for a given sample."""
     sel = [
-        Stations_Metadata.Station_Name,
-        Stations_Metadata.2008,
-        Stations_Metadata.2009,
-        Stations_Metadata.2010,
-        Stations_Metadata.2011,
-        Stations_Metadata.2012,
-        Stations_Metadata.2013,
-        Stations_Metadata.2014,
-        Stations_Metadata.2015,
-        Stations_Metadata.2016,
-        Stations_Metadata.2017,
-        Stations_Metadata.2018
+        Stations_Metadata.Station_Name
     ]
 
-    results = db.session.query(*sel).all()
+    results = db.session.query(*sel).filter(Stations_Metadata.Station_Name == station).all()
 
-    # Format the data to send as json
-    data = {
-        "station": [result[0] for result in results],
-        "ridership": [result[1] for result in results]
-    }
+    station_metadata = {}
+    for result in results:
+        station_metadata["Station"] = result[0]
 
-    return jsonify(data)
+    
+    print(station_metadata)
+    return jsonify(station_metadata)
 
+
+@app.route("/stations")
+def stations():
+    sel = [Stations_Metadata.Station_Name]
+
+    stations = [station[0] for station in db.session.query(*sel).all()]
+
+    return jsonify(stations)
 
 @app.route("/stations/<station>")
 def ridership_by_station(station):
@@ -91,7 +74,7 @@ def ridership_by_station(station):
 
     df = pd.read_sql_query(stmt, db.session.bind)
 
-    ridership_data = df.loc[df['Station_Name'] == station, :]
+    ridership_data = df.loc[df['Station_Name'] == station]
 
     years = list(df.columns)[3:]
 
@@ -103,28 +86,6 @@ def ridership_by_station(station):
     }
 
     return jsonify(data)
-
-# @app.route("/years")
-# def years():
-#     stmt = db.session.query(Stations_Metadata).statement
-
-#     df = pd.read_sql_query(stmt, db.session.bind)
-
-#     # ridership_data = df.loc[:,:]
-
-#     # years = [year for years in ridership_data.columns.values[3:]]
-
-#     return jsonify(list(df.columns)[3:])
-
-
-# @app.route("/stations")
-# def stations():
-#     sel = [Stations_Metadata.Station_Name]
-
-#     stations = [station[0] for station in db.session.query(*sel).all()]
-#     print(stations)
-
-#     return jsonify(stations)
 
 
 if __name__ == "__main__":
