@@ -118,18 +118,18 @@ function init() {
   buildBarChart(firstStation);
   });
 
-  //create a list of years to populate select options
-  var selector2 = d3.select("#selDatasetYear");
-  d3.json("/years").then((years) => {
-    console.log(years)
-    years.forEach((year) => {
-      selector2
-          .append("option")
-          .text(year)
-          .property("value", year);
-    });
-    const firstYear = years[0];
-  });
+  // //create a list of years to populate select options
+  // var selector2 = d3.select("#selDatasetYear");
+  // d3.json("/years").then((years) => {
+  //   console.log(years)
+  //   years.forEach((year) => {
+  //     selector2
+  //         .append("option")
+  //         .text(year)
+  //         .property("value", year);
+  //   });
+  //   const firstYear = years[0];
+  // });
 }
 
 function optionChanged(newStation) {

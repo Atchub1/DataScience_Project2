@@ -217,8 +217,8 @@ def ten_year_ridership(year):
         'lon' : lon,
         'stations': stations          
     }
-
-    return jsonify(data)
+    data2 = pd.DataFrame(data).to_dict('records')
+    return jsonify(data2)
     
 
 if __name__ == "__main__":
