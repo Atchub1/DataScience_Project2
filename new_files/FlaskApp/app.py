@@ -7,7 +7,6 @@ import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
-
 from flask import Flask, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 
@@ -34,6 +33,7 @@ Total_Data = Base.classes.total_ridership
 Weekday_Data = Base.classes.weekday_data
 Saturday_Data = Base.classes.saturday_data
 Sunday_Data = Base.classes.sunday_holiday_data
+Ten_Year_Ridership = Base.classes.ten_year_ridership
 
 # print(Station_Metadata)
 
@@ -157,6 +157,54 @@ def sunday_ridership(station):
     }
 
     return jsonify(data)
+
+@app.route("/years")
+def ten_year_ridership():
+    #get list of years and column placement for iloc.  assumes year columns start at position 2
+    useryear2 = '2018'
+    useryear = 2008
+    print(useryear)
+    startyear = 2008
+    totalyears = 10
+    years = [] 
+    references = []
+    for x in range(0,totalyears+1):
+        if x == 0:
+            year = startyear
+            years.append(year)
+            reference = 3
+            references.append(reference)
+        else:
+            year = year + 1
+            years.append(year)
+            reference = reference + 1
+            references.append(reference)
+    year_dict = dict(zip(years, references))
+    #get column number based on users chosen year
+    column = year_dict[useryear]
+    print(column)
+    # #pull in data from the database
+    stmt = db.session.query(Ten_Year_Ridership).statement
+
+    df = pd.read_sql_query(stmt, db.session.bind)
+    # #get the ridership data for the year chosen
+    ridership_data = df.iloc[:, column].tolist()
+    print(ridership_data)
+    #get the list of station names.  assumes position 1 in table of database
+    stations = df.iloc[:, 2].tolist()
+    lat = df.iloc[:,15].tolist()
+    lon = df.iloc[:,16].tolist()
+    #ridership = ridership_data.values[0][3:]
+
+    data = {
+        'stations': stations,
+        'ridership': ridership_data,
+        'lat' : lat,
+        'lon' : lon
+    }
+
+    return jsonify(data)
+    
 
 if __name__ == "__main__":
     app.run()
