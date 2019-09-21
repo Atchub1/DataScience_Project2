@@ -157,31 +157,46 @@ def sunday_ridership(station):
     }
 
     return jsonify(data)
-
 @app.route("/years")
-def ten_year_ridership():
+def years():
     #get list of years and column placement for iloc.  assumes year columns start at position 2
-    useryear2 = '2018'
-    useryear = 2008
-    print(useryear)
+    #useryear2 = '2018'
+    #useryear = 2008
+    #print(useryear)
+    startyear = 2008
+    totalyears = 10
+    years = [] 
+    for x in range(0,totalyears+1):
+        if x == 0:
+            year = startyear
+            years.append(year)
+        else:
+            year = year + 1
+            years.append(year)
+
+    return jsonify(years)
+
+@app.route("/years/<year>")
+def ten_year_ridership(year):
+    #get list of years and column placement for iloc.  assumes year columns start at position 2
     startyear = 2008
     totalyears = 10
     years = [] 
     references = []
     for x in range(0,totalyears+1):
         if x == 0:
-            year = startyear
-            years.append(year)
+            year2 = startyear
+            years.append(year2)
             reference = 3
             references.append(reference)
         else:
-            year = year + 1
-            years.append(year)
+            year2 = year2 + 1
+            years.append(year2)
             reference = reference + 1
             references.append(reference)
     year_dict = dict(zip(years, references))
     #get column number based on users chosen year
-    column = year_dict[useryear]
+    column = year_dict[int(year)]
     print(column)
     # #pull in data from the database
     stmt = db.session.query(Ten_Year_Ridership).statement
@@ -197,10 +212,10 @@ def ten_year_ridership():
     #ridership = ridership_data.values[0][3:]
 
     data = {
-        'stations': stations,
         'ridership': ridership_data,
         'lat' : lat,
-        'lon' : lon
+        'lon' : lon,
+        'stations': stations          
     }
 
     return jsonify(data)
