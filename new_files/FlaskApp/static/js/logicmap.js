@@ -1,18 +1,18 @@
-function wholeMap (year) {
+//function wholeMap (year) {
 //create a function to return the color for earthquake magnitude https://leafletjs.com/examples/choropleth/
-function getColor(mag) {
-    return mag > 5 ? '#ff0008' :
-           mag > 4  ? '#ff7b00' :
-           mag > 3  ? '#ffcd03' :
-           mag > 2  ? '#f2ff00' :
-           mag > 1   ? '#aaff00' :
-           mag > 0   ? '#26ff00' :
+function getColor(ridership) {
+    return ridership > 5 ? '#ff0008' :
+           ridership > 4  ? '#ff7b00' :
+           ridership > 3  ? '#ffcd03' :
+           ridership > 2  ? '#f2ff00' :
+           ridership > 1   ? '#aaff00' :
+           ridership > 0   ? '#26ff00' :
                      '#00ffd0';
 }
 
 // Create the createMap function
- function createMap(earthquakesLayer) {
-   console.log(earthquakesLayer);
+ function createMap(ridershipLayer) {
+   console.log(ridershipLayer);
     
       // Create the tile layer that will be the background of our map
       var light = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
@@ -30,7 +30,7 @@ function getColor(mag) {
     
       // Create an overlayMaps object to hold the earthquake layer
     var overlayMap = {
-      'Earthquakes' : earthquakesLayer
+      'Ridership' : ridershipLayer
     };
     
       // Create the map object with options
@@ -64,7 +64,7 @@ function getColor(mag) {
     };
 
     legend.addTo(map);
-    map.setMaxBounds(  [[-90,-180],   [90,180]]  )
+    //map.setMaxBounds(  [[-90,-180],   [90,180]]  )
     }
     
 
@@ -78,22 +78,22 @@ function createCircles(response) {
     // Initialize an array to hold circles
     let centers = [];
     // Loop through the earthquake array
-    response.forEach(quake => {
+    response.forEach(station => {
       // For each earthquake, create a circle and bind a popup with the earthquake's magnitude 
-      let location = [quake.geometry.coordinates[1], quake.geometry.coordinates[0]];
+      let location = [station.lat, station.lon];
       //console.log(location); 
-      let mag = quake.properties.mag;
-      let place = quake.properties.place;
-      if(mag > 0){
+      let ridership = station.ridership;
+      let name = station.stations;
+      if(ridership > 0){
       //console.log(mag);
       let center = L.circle(location, {
         fillOpacity: .75,
-        color: getColor(mag),
-        fillColor: getColor(mag),
+        color: getColor(ridership),
+        fillColor: getColor(ridership),
         //Adjust radius
-        radius: mag*25000})
+        radius: ridership*25000})
         //}).addTo(myMap);
-        .bindPopup(`<h1> ${place} </h1> <hr> <h3>Magnitude: ${mag} </h3>`);
+        .bindPopup(`<h1> ${name} </h1> <hr> <h3>Total Ridership: ${ridership} </h3>`);
       // Add the center to the centers array
       centers.push(center);
       };
@@ -101,27 +101,29 @@ function createCircles(response) {
     //console.log(centers);
     
     // // Create a layer group made from the centers array, pass it into the createMap function
-    let earthquakesLayer = L.layerGroup(centers);
-    createMap(earthquakesLayer);
+    let ridershipLayer = L.layerGroup(centers);
+    createMap(ridershipLayer);
   }
 
   // Perform an API call to the earthquake API to get earthquake information. Call createCircles when complete
-  url = `/years/${year}`
+  url = `/years/2018`
   d3.json(url, createCircles);
-} 
+//} 
   //create a list of years to populate select options
-function init (){
-  var selector2 = d3.select("#selDatasetYear");
-  d3.json("/years").then((years) => {
-    console.log(years)
-    years.forEach((year) => {
-      selector2
-          .append("option")
-          .text(year)
-          .property("value", year);
-    });
-    const firstYear = years[0];
-  });
-}
+// function init (){
+//   var selector2 = d3.select("#selDatasetYear");
+//   d3.json("/years").then((years) => {
+//     console.log(years)
+//     years.forEach((year) => {
+//       selector2
+//           .append("option")
+//           .text(year)
+//           .property("value", year);
+//     });
+//     const firstYear = years[0];
+//     wholeMap(firstYear);
+//   });
+ 
+// }
 
-init()
+//init()

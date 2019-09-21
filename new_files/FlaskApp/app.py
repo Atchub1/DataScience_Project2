@@ -204,6 +204,7 @@ def ten_year_ridership(year):
     df = pd.read_sql_query(stmt, db.session.bind)
     # #get the ridership data for the year chosen
     ridership_data = df.iloc[:, column].tolist()
+    ridershipnona = [0 if math.isnan(x) else x for x in ridership_data]
     print(ridership_data)
     #get the list of station names.  assumes position 1 in table of database
     stations = df.iloc[:, 2].tolist()
@@ -212,7 +213,7 @@ def ten_year_ridership(year):
     #ridership = ridership_data.values[0][3:]
 
     data = {
-        'ridership': ridership_data,
+        'ridership': ridershipnona,
         'lat' : lat,
         'lon' : lon,
         'stations': stations          
