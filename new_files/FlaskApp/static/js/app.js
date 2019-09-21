@@ -94,6 +94,7 @@ function buildBarChart(station) {
 
 }
 
+
 function init() {      
 
   // Set up the dropdown menu
@@ -108,13 +109,27 @@ function init() {
           .text(station)
           .property("value", station);
       });
-
+  
   // Use the first sample from the list to build the initial plots
   const firstStation = stationNames[0];
+  
   buildMetadata(firstStation);
   buildLineChart(firstStation);
   buildBarChart(firstStation);
   });
+
+  // //create a list of years to populate select options
+  // var selector2 = d3.select("#selDatasetYear");
+  // d3.json("/years").then((years) => {
+  //   console.log(years)
+  //   years.forEach((year) => {
+  //     selector2
+  //         .append("option")
+  //         .text(year)
+  //         .property("value", year);
+  //   });
+  //   const firstYear = years[0];
+  // });
 }
 
 function optionChanged(newStation) {
