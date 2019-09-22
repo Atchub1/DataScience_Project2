@@ -67,7 +67,6 @@ function getColor(ridership) {
 
     legend.addTo(map);
     //map.setMaxBounds(  [[-90,-180],   [90,180]]  )
-    
     }
     
 
@@ -107,7 +106,6 @@ function createCircles(response) {
     // // Create a layer group made from the centers array, pass it into the createMap function
     let ridershipLayer = L.layerGroup(centers);
     createMap(ridershipLayer);
-    map.invalidateSize(true);
   }
 
   // Perform an API call to the earthquake API to get earthquake information. Call createCircles when complete
