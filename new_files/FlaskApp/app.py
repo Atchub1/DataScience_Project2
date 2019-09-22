@@ -34,6 +34,7 @@ Weekday_Data = Base.classes.weekday_data
 Saturday_Data = Base.classes.saturday_data
 Sunday_Data = Base.classes.sunday_holiday_data
 Ten_Year_Ridership = Base.classes.ten_year_ridership
+System_Info = Base.classes.system_info
 
 # print(Station_Metadata)
 
