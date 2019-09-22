@@ -60,7 +60,7 @@ def station_metadata(station):
     for result in results:
         station_metadata["Station"] = result[0]
         station_metadata["ADA"] = result[1]
-
+        print(result)
 
     
     print(station_metadata)
