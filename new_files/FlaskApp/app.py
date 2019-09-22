@@ -49,14 +49,18 @@ def index():
 def station_metadata(station):
     """Return the MetaData for a given sample."""
     sel = [
-        Total_Data.Station_Name
+        System_Info.Station_Name,
+        System_Info.ADA
+
     ]
 
-    results = db.session.query(*sel).filter(Total_Data.Station_Name == station).all()
+    results = db.session.query(*sel).filter(System_Info.Station_Name == station).all()
 
     station_metadata = {}
     for result in results:
         station_metadata["Station"] = result[0]
+        station_metadata["ADA"] = result[1]
+
 
     
     print(station_metadata)
