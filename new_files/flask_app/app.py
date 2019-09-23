@@ -7,6 +7,7 @@ import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
+
 from flask import Flask, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 
@@ -33,8 +34,8 @@ Total_Data = Base.classes.total_ridership
 Weekday_Data = Base.classes.weekday_data
 Saturday_Data = Base.classes.saturday_data
 Sunday_Data = Base.classes.sunday_holiday_data
-Ten_Year_Ridership = Base.classes.ten_year_ridership
-System_Info = Base.classes.system_info
+Location_Ridership = Base.classes.location_ridership_data
+# System_Info = Base.classes.system_info
 
 # print(Station_Metadata)
 
@@ -44,23 +45,25 @@ System_Info = Base.classes.system_info
 def index():
     return render_template("index.html")
 
+@app.route("/map")
+def map():
+    return render_template("index_map.html")
+
 
 @app.route("/metadata/<station>")
 def station_metadata(station):
     """Return the MetaData for a given sample."""
     sel = [
-        System_Info.Station_Name,
-        System_Info.ADA
-
+        Total_Data.Station_Name
+        # System_Info.ADA
     ]
 
-    results = db.session.query(*sel).filter(System_Info.Station_Name == station).all()
+    results = db.session.query(*sel).filter(Total_Data.Station_Name == station).all()
 
     station_metadata = {}
     for result in results:
         station_metadata["Station"] = result[0]
-        station_metadata["ADA"] = result[1]
-        print(result)
+        # station_metadata["ADA"] = result[1]
 
     
     print(station_metadata)
@@ -85,10 +88,10 @@ def total_ridership(station):
     ridership_data = df.loc[df['Station_Name'] == station]
 
     years = list(df.columns)[3:]
-    
+
     ridership = ridership_data.values[0][3:]
     ridershipnona = [0 if math.isnan(x) else x for x in ridership]
-   
+
     data = {
         'year': years,
         'ridership': ridershipnona
@@ -120,8 +123,9 @@ def daily_ridership(station):
     saturday_ridership_data = saturday_df.loc[saturday_df['Station_Name'] == station]
 
     saturday_ridership = saturday_ridership_data.values[0][3:]
+
     saturday_ridershipnona = [0 if math.isnan(x) else x for x in saturday_ridership]
-    print(saturday_ridershipnona)
+
     # Sunday Holiday Data 
 
     stmt_sunday = db.session.query(Sunday_Data).statement
@@ -131,43 +135,22 @@ def daily_ridership(station):
     sunday_ridership_data = sunday_df.loc[sunday_df['Station_Name'] == station]
 
     sunday_ridership = sunday_ridership_data.values[0][3:]
+
     sunday_ridershipnona = [0 if math.isnan(x) else x for x in sunday_ridership]
+
 
     data = {
         'year': years,
         'weekday_ridership': weekday_ridershipnona,
         'saturday_ridership': saturday_ridershipnona,
-        'sunday_ridership': sunday_ridershipnona       
+        'sunday_ridership': sunday_ridershipnona        
     }
 
     return jsonify(data)
 
 
-@app.route("/sunday/<station>")
-def sunday_ridership(station):
-
-    stmt = db.session.query(Sunday_Data).statement
-
-    df = pd.read_sql_query(stmt, db.session.bind)
-
-    ridership_data = df.loc[df['Station_Name'] == station]
-
-    years = list(df.columns)[3:]
-
-    ridership = ridership_data.values[0][3:]
-
-    data = {
-        'year': years,
-        'ridership': ridership.tolist()
-    }
-
-    return jsonify(data)
 @app.route("/years")
 def years():
-    #get list of years and column placement for iloc.  assumes year columns start at position 2
-    #useryear2 = '2018'
-    #useryear = 2008
-    #print(useryear)
     startyear = 2008
     totalyears = 10
     years = [] 
@@ -181,8 +164,9 @@ def years():
 
     return jsonify(years)
 
+
 @app.route("/years/<year>")
-def ten_year_ridership(year):
+def location_ridership(year):
     #get list of years and column placement for iloc.  assumes year columns start at position 2
     startyear = 2008
     totalyears = 10
@@ -204,7 +188,7 @@ def ten_year_ridership(year):
     column = year_dict[int(year)]
     print(column)
     # #pull in data from the database
-    stmt = db.session.query(Ten_Year_Ridership).statement
+    stmt = db.session.query(Location_Ridership).statement
 
     df = pd.read_sql_query(stmt, db.session.bind)
     # #get the ridership data for the year chosen
@@ -225,7 +209,6 @@ def ten_year_ridership(year):
     }
     data2 = pd.DataFrame(data).to_dict('records')
     return jsonify(data2)
-    
 
 if __name__ == "__main__":
     app.run()

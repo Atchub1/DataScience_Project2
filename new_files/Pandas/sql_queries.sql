@@ -21,3 +21,13 @@ DROP TABLE sunday_holiday_data;
 SELECT * FROM sunday_holiday_data;
 
 ALTER TABLE sunday_holiday_data ADD PRIMARY KEY ("Station_ID");
+
+DROP TABLE location_ridership_data;
+
+SELECT * FROM location_ridership_data;
+
+ALTER TABLE location_ridership_data ADD PRIMARY KEY ("index");
+
+DROP TABLE system_info;
+
+SELECT * FROM system_info;

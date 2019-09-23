@@ -64,14 +64,14 @@ function buildBarChart(station) {
             y: y_weekday,
             text: values,
             type: 'bar',
-            name: "Weekday Average Ridership"
+            name: "Average Weekday Ridership"
     };
         var trace2 = {
           x: x,
           y: y_saturday,
           text: values,
           type: 'bar',
-          name: "Saturday Average Ridership"          
+          name: "Average Saturday Ridership"          
       };
 
       var trace3 = {
@@ -79,21 +79,20 @@ function buildBarChart(station) {
         y: y_sunday,
         text: values,
         type: 'bar',
-        name: "Sunday/Holiday Average Ridership"        
+        name: "Average Sunday/Holiday Ridership"        
     };      
       var data = [trace1, trace2, trace3];
 
       var layout = {
           title: `${station} Ridership Data`,
           xaxis: { title: "Year"},
-          yaxis: { title: "Average Ridership over the years"},
+          yaxis: { title: "Total Ridership over the years"},
           barmode: 'stack'
       };
       Plotly.newPlot("bar", data, layout);        
     });
 
 }
-
 
 function init() {      
 
@@ -109,27 +108,14 @@ function init() {
           .text(station)
           .property("value", station);
       });
-  
+
   // Use the first sample from the list to build the initial plots
   const firstStation = stationNames[0];
-  
   buildMetadata(firstStation);
   buildLineChart(firstStation);
   buildBarChart(firstStation);
   });
 
-  // //create a list of years to populate select options
-  // var selector2 = d3.select("#selDatasetYear");
-  // d3.json("/years").then((years) => {
-  //   console.log(years)
-  //   years.forEach((year) => {
-  //     selector2
-  //         .append("option")
-  //         .text(year)
-  //         .property("value", year);
-  //   });
-  //   const firstYear = years[0];
-  // });
 }
 
 function optionChanged(newStation) {
