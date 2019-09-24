@@ -17,25 +17,25 @@ function wholeMap (year) {
     document.getElementById('map-cont').innerHTML = "<div id='map' style='width: 200px; height: 600px; min-height: 100%; min-width: %100; display: block;'></div>";
         // Create the tile layer that will be the background of our map
         var outdoorsmap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-        attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+        attribution: attribution,
         maxZoom: 18,
         id: "mapbox.outdoors",
         accessToken: API_KEY
         });
 
         var satellitemap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-        attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-        maxZoom: 18,
+        attribution: attribution,
         id: "mapbox.satellite",
         accessToken: API_KEY
         });
     
-        var grayscalemap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-        attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+        var light = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+        attribution: attribution,
         maxZoom: 18,
-        id: "mapbox.light",
-        accessToken: API_KEY
-        });            
+        id: "mapbox.streets",
+        accessToken: API_KEY,
+        noWrap: true
+        });          
         
         var lLine = omnivore.geojson('static/data/CTA_RailLines.geojson');
         console.log(lLine);
@@ -44,7 +44,7 @@ function wholeMap (year) {
         // Create a baseMaps object to hold the satellite layer
         var baseMaps={
             "Outdoor Map": outdoorsmap,
-            "Greyscale Map": grayscalemap,
+            "Light Map": light,
             "Satellite Map": satellitemap
         };
       
@@ -58,7 +58,7 @@ function wholeMap (year) {
         var map = L.map("map", {
           center: [41.85, -87.65],
           zoom: 10,
-          layer: [outdoorsmap, overlayMap]
+          layer: [light, overlayMap]
         });
       
         // Create a layer control, pass in the baseMaps and overlayMaps. Add the layer control to the map
@@ -94,7 +94,6 @@ function wholeMap (year) {
   // Create the createCircles function
   function createCircles(response) {
       // Pull the "earthquakes" property off of response.data
-      console.log(response);
       //let features = response.features;
       //console.log(features);
       // Initialize an array to hold circles
@@ -103,7 +102,6 @@ function wholeMap (year) {
       response.forEach(station => {
         // For each earthquake, create a circle and bind a popup with the earthquake's magnitude 
         let location = [station.lat, station.lon];
-        console.log(location);
         //console.log(location); 
         let ridership = station.ridership.toFixed(0);
         let name = station.stations;

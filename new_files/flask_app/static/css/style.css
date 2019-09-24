@@ -12,6 +12,32 @@ html, body
     height: 100%;
 }
 
+.year {
+    margin-left: 100px;
+    background-color: #5252a1;
+}
+
+.station {
+    margin-left: 50px;
+    margin-top: 200px;
+    background-color: #5252a1;
+}
+
+.font {
+    font-weight: bold;
+}
+
+.panel {
+    margin-left: 50px;
+    margin-top: 20px;
+}
+
+
+#bar {
+margin-left: 30px;
+padding-left: 100px;
+}
+
 #map-holder{
     height: 100%;
 }

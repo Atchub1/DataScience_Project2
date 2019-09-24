@@ -48,14 +48,13 @@ def station_metadata(station):
     sel = [
         Total_Data.Station_Name,
         Total_Data.ADA
-
     ]
 
     results = db.session.query(*sel).filter(Total_Data.Station_Name == station).all()
 
     station_metadata = {}
     for result in results:
-        station_metadata["Station"] = result[0]
+        station_metadata["Station-Name"] = result[0]
         station_metadata["ADA"] = result[1]
         print(result)
 
