@@ -22,8 +22,12 @@ SELECT * FROM sunday_holiday_data;
 
 ALTER TABLE sunday_holiday_data ADD PRIMARY KEY ("Station_ID");
 
-DROP TABLE ten_year_ridership;
+DROP TABLE location_ridership_data;
 
-SELECT * FROM ten_year_ridership;
+SELECT * FROM location_ridership_data;
 
-ALTER TABLE ten_year_ridership ADD PRIMARY KEY ("Station_ID");
+ALTER TABLE location_ridership_data ADD PRIMARY KEY ("index");
+
+DROP TABLE system_info;
+
+SELECT * FROM system_info;
