@@ -7,7 +7,8 @@ function buildMetadata(station) {
 
 
     // Use d3 to select the panel with id of `#sample-metadata`
-    d3.json(url).then(function(station) {
+    d3.json(url, function(error, station) {
+      if (error) return console.warn(error);
       var sampleMetadata = d3.select("#sample-metadata");
   
     // Use `.html("") to clear any existing metadata
@@ -27,7 +28,9 @@ function buildMetadata(station) {
 function buildLineChart(station) {
   // TO DO: Iterate through all states
   var url = `/total/${station}`
-  d3.json(url).then(function(data) {     
+  
+  d3.json(url, function(error, data) {     
+    if (error) return console.warn(error);  
       // Build line chart
       var x= data.year;
       var y= data.ridership;
@@ -42,9 +45,9 @@ function buildLineChart(station) {
       var data = [trace1];
 
       var layout = {
-          title: `${station} Ridership Data`,
+          title: `Total Ridership for: ${station}`,
           xaxis: { title: "Year"},
-          yaxis: { title: "Average Ridership over the years"}
+          yaxis: { title: "Total Ridership over the years"}
       };
       Plotly.newPlot("line", data, layout, {responsive: true});        
   });
@@ -52,7 +55,9 @@ function buildLineChart(station) {
 
 function buildBarChart(station) {
   var url = `/station/${station}`
-  d3.json(url).then(function(data) {       
+  
+  d3.json(url, function(error, data) {       
+    if (error) return console.warn(error);
     var x= data.year; 
     var y_weekday= data.weekday_ridership;
     var y_saturday = data.saturday_ridership;
@@ -64,14 +69,14 @@ function buildBarChart(station) {
             y: y_weekday,
             text: values,
             type: 'bar',
-            name: "Average Weekday Ridership"
+            name: "Weekday Average Ridership"
     };
         var trace2 = {
           x: x,
           y: y_saturday,
           text: values,
           type: 'bar',
-          name: "Average Saturday Ridership"          
+          name: "Saturday Average Ridership"          
       };
 
       var trace3 = {
@@ -79,20 +84,21 @@ function buildBarChart(station) {
         y: y_sunday,
         text: values,
         type: 'bar',
-        name: "Average Sunday/Holiday Ridership"        
+        name: "Sunday/Holiday Average Ridership"        
     };      
       var data = [trace1, trace2, trace3];
 
       var layout = {
-          title: `${station} Ridership Data`,
+          title: `Average Day-Type Ridership for: ${station}`,
           xaxis: { title: "Year"},
-          yaxis: { title: "Total Ridership over the years"},
+          yaxis: { title: "Average Day-Type Ridership"},
           barmode: 'stack'
       };
       Plotly.newPlot("bar", data, layout);        
     });
 
 }
+
 
 function init() {      
 
@@ -101,21 +107,42 @@ function init() {
   var selector = d3.select("#selDataset");
 
   // Use the list of sample names to populate the select options
-  d3.json("/stations").then((stationNames) => {
-      stationNames.forEach((station) => {
+  d3.json("/stations", function(error, data) {
+    if (error) return console.warn(error);
+    data.forEach((station) => {
       selector
           .append("option")
           .text(station)
           .property("value", station);
       });
-
+  // d3.json("/stations").then((stationNames) => {
+  //   stationNames.forEach((station) => {
+  //   selector
+  //       .append("option")
+  //       .text(station)
+  //       .property("value", station);
+  //   });
+  
   // Use the first sample from the list to build the initial plots
-  const firstStation = stationNames[0];
+  const firstStation = data[0];
+  
   buildMetadata(firstStation);
   buildLineChart(firstStation);
   buildBarChart(firstStation);
   });
 
+  // //create a list of years to populate select options
+  // var selector2 = d3.select("#selDatasetYear");
+  // d3.json("/years").then((years) => {
+  //   console.log(years)
+  //   years.forEach((year) => {
+  //     selector2
+  //         .append("option")
+  //         .text(year)
+  //         .property("value", year);
+  //   });
+  //   const firstYear = years[0];
+  // });
 }
 
 function optionChanged(newStation) {

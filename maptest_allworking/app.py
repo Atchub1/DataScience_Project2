@@ -34,7 +34,7 @@ Weekday_Data = Base.classes.weekday_data
 Saturday_Data = Base.classes.saturday_data
 Sunday_Data = Base.classes.sunday_holiday_data
 Ten_Year_Ridership = Base.classes.ten_year_ridership
-System_Info = Base.classes.system_info
+# System_Info = Base.classes.system_info
 
 # print(Station_Metadata)
 
@@ -49,17 +49,17 @@ def index():
 def station_metadata(station):
     """Return the MetaData for a given sample."""
     sel = [
-        System_Info.Station_Name,
-        System_Info.ADA
+        Total_Data.Station_Name,
+        # System_Info.ADA
 
     ]
 
-    results = db.session.query(*sel).filter(System_Info.Station_Name == station).all()
+    results = db.session.query(*sel).filter(Total_Data.Station_Name == station).all()
 
     station_metadata = {}
     for result in results:
         station_metadata["Station"] = result[0]
-        station_metadata["ADA"] = result[1]
+        # station_metadata["ADA"] = result[1]
         print(result)
 
     
