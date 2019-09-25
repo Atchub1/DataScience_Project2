@@ -1,15 +1,15 @@
 function wholeMap (year) {
   //create a function to return the color for earthquake magnitude https://leafletjs.com/examples/choropleth/
   function getColor(ridership) {
-      return ridership > 5000000 ? '#c40000' :
-             ridership > 3000000 ? '#b63fba' :
-             ridership > 2000000 ? '#f57f0a' :
-             ridership > 1000000 ? '#d3d627' :
-             ridership > 800000  ? '#eef0a1' :
-             ridership > 600000  ? '#138a27' :
-             ridership > 400000  ? '#90d92b' :
-             ridership > 200000   ? '#261596' :
-             ridership > 0   ? '#6960a6' :
+      return ridership > 5000000 ? '#FF0000' :
+             ridership > 3000000 ? '#FF7B00' :
+             ridership > 2000000 ? '#FFC100' :
+             ridership > 1000000 ? '#FFF600' :
+             ridership > 800000  ? '#E5FF00' :
+             ridership > 600000  ? '#90d92b' :
+             ridership > 400000  ? '#138a27' :
+             ridership > 200000   ? '#6960a6' :
+             ridership > 0   ? '#261596' :
                       '#8f8e9c';
   }
 
@@ -115,9 +115,9 @@ function wholeMap (year) {
           color: getColor(ridership),
           fillColor: getColor(ridership),
           //Adjust radius
-          radius: ridership/3000})
+          radius: ridership/10000})
           //}).addTo(myMap);
-          .bindPopup(`<h1> ${name} </h1> <hr> <h3>Total Ridership: ${ridership} </h3>`);
+          .bindPopup(`<h1> ${name} </h1> <hr> <h3>Total Ridership: ${ridership}M</h3>`);
         // Add the center to the centers array
         centers.push(center);
         //};

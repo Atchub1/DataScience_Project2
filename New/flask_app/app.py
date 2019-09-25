@@ -230,8 +230,8 @@ def ten_year_ridership(year):
     # print(ridership_data)
     #get the list of station names.  assumes position 1 in table of database
     stations = df.iloc[:, 2].tolist()
-    lat = df.iloc[:,16].tolist()
-    lon = df.iloc[:,17].tolist()
+    lat = df.iloc[:,25].tolist()
+    lon = df.iloc[:,26].tolist()
     #ridership = ridership_data.values[0][3:]
 
     data = {
