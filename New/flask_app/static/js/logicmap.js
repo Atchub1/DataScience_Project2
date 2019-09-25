@@ -117,7 +117,7 @@ function wholeMap (year) {
           //Adjust radius
           radius: ridership/10000})
           //}).addTo(myMap);
-          .bindPopup(`<h1> ${name} </h1> <hr> <h3>Total Ridership: ${ridership}M</h3>`);
+          .bindPopup(`<h1> ${name} </h1> <hr> <h3>Total Ridership: ${ridership}</h3>`);
         // Add the center to the centers array
         centers.push(center);
         //};
