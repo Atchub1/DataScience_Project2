@@ -145,9 +145,9 @@ def daily_ridership(station):
 
     weekday_ridership_data = weekday_df.loc[weekday_df['Station_Name'] == station]
 
-    years = list(weekday_df.columns)[3:]
+    years = list(weekday_df.columns)[3:14]
 
-    weekday_ridership = weekday_ridership_data.values[0][3:]
+    weekday_ridership = weekday_ridership_data.values[0][3:14]
     weekday_ridershipnona = [0 if math.isnan(x) else x for x in weekday_ridership]
 
     # Saturday Data 
@@ -158,7 +158,7 @@ def daily_ridership(station):
 
     saturday_ridership_data = saturday_df.loc[saturday_df['Station_Name'] == station]
 
-    saturday_ridership = saturday_ridership_data.values[0][3:]
+    saturday_ridership = saturday_ridership_data.values[0][3:14]
     saturday_ridershipnona = [0 if math.isnan(x) else x for x in saturday_ridership]
     # print(saturday_ridershipnona)
     # Sunday Holiday Data 
@@ -169,7 +169,7 @@ def daily_ridership(station):
 
     sunday_ridership_data = sunday_df.loc[sunday_df['Station_Name'] == station]
 
-    sunday_ridership = sunday_ridership_data.values[0][3:]
+    sunday_ridership = sunday_ridership_data.values[0][3:14]
     sunday_ridershipnona = [0 if math.isnan(x) else x for x in sunday_ridership]
 
     data = {
