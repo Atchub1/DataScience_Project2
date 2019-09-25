@@ -11,6 +11,7 @@ from flask import Flask, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.config['JSON_SORT_KEYS'] = False
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -47,19 +48,61 @@ def station_metadata(station):
     """Return the MetaData for a given sample."""
     sel = [
         Total_Data.Station_Name,
-        Total_Data.ADA
+        Total_Data.ADA,
+        Total_Data.Red,
+        Total_Data.Blue,
+        Total_Data.Green,
+        Total_Data.Brown,
+        Total_Data.Purple,
+        Total_Data.Purple_Express,        
+        Total_Data.Yellow,
+        Total_Data.Pink,
+        Total_Data.Orange  
     ]
 
+    col_names = Total_Data.__table__.columns.keys()
+
+
+    
+								
     results = db.session.query(*sel).filter(Total_Data.Station_Name == station).all()
+
+    # print(col_names)
+
+    color = {}
+    for result in results:
+        color["Red"] = result[2]
+        color["Blue"] = result[3]
+        color["Green"] = result[4]
+        color["Brown"] = result[5]
+        color["Purple"] = result[6]
+        color["Purple_Express"] = result[7]   
+        color["Yellow"] = result[8]
+        color["Pink"] = result[9]
+        color["Orange"] = result[10] 
+
+    # print (color)
+
+    colors = {}
+    line_color = []
+
+    # Search for values which are True in the dict and return the keys
+    for key, value in color.items():
+        if True == value:
+            line_color.append(key)
+
+    # add space between list items
+    line_color = [ f' {x} ' for x in line_color]
+    colors["Line Color(s)"] = line_color
+    print(colors)
 
     station_metadata = {}
     for result in results:
         station_metadata["Station-Name"] = result[0]
-        station_metadata["ADA"] = result[1]
-        print(result)
+        station_metadata["ADA"] = result[1]  
 
-    
-    print(station_metadata)
+    # append the line-color dict into the metadata dict
+    station_metadata.update(colors)
     return jsonify(station_metadata)
 
 
@@ -80,9 +123,9 @@ def total_ridership(station):
 
     ridership_data = df.loc[df['Station_Name'] == station]
 
-    years = list(df.columns)[3:]
+    years = list(df.columns)[3:14]
     
-    ridership = ridership_data.values[0][3:]
+    ridership = ridership_data.values[0][3:14]
     ridershipnona = [0 if math.isnan(x) else x for x in ridership]
    
     data = {
@@ -117,7 +160,7 @@ def daily_ridership(station):
 
     saturday_ridership = saturday_ridership_data.values[0][3:]
     saturday_ridershipnona = [0 if math.isnan(x) else x for x in saturday_ridership]
-    print(saturday_ridershipnona)
+    # print(saturday_ridershipnona)
     # Sunday Holiday Data 
 
     stmt_sunday = db.session.query(Sunday_Data).statement
@@ -142,9 +185,6 @@ def daily_ridership(station):
 @app.route("/years")
 def years():
     #get list of years and column placement for iloc.  assumes year columns start at position 2
-    #useryear2 = '2018'
-    #useryear = 2008
-    #print(useryear)
     startyear = 2008
     totalyears = 10
     years = [] 
@@ -179,7 +219,7 @@ def ten_year_ridership(year):
     year_dict = dict(zip(years, references))
     #get column number based on users chosen year
     column = year_dict[int(year)]
-    print(column)
+    # print(column)
     # #pull in data from the database
     stmt = db.session.query(Ten_Year_Ridership).statement
 
@@ -187,7 +227,7 @@ def ten_year_ridership(year):
     # #get the ridership data for the year chosen
     ridership_data = df.iloc[:, column].tolist()
     ridershipnona = [0 if math.isnan(x) else x for x in ridership_data]
-    print(ridership_data)
+    # print(ridership_data)
     #get the list of station names.  assumes position 1 in table of database
     stations = df.iloc[:, 2].tolist()
     lat = df.iloc[:,16].tolist()

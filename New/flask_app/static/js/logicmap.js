@@ -1,13 +1,16 @@
 function wholeMap (year) {
   //create a function to return the color for earthquake magnitude https://leafletjs.com/examples/choropleth/
   function getColor(ridership) {
-      return ridership > 1000000 ? '#ff0008' :
-             ridership > 800000  ? '#ff7b00' :
-             ridership > 600000  ? '#ffcd03' :
-             ridership > 400000  ? '#f2ff00' :
-             ridership > 200000   ? '#aaff00' :
-             ridership > 0   ? '#26ff00' :
-                      '#00ffd0';
+      return ridership > 5000000 ? '#c40000' :
+             ridership > 3000000 ? '#b63fba' :
+             ridership > 2000000 ? '#f57f0a' :
+             ridership > 1000000 ? '#d3d627' :
+             ridership > 800000  ? '#eef0a1' :
+             ridership > 600000  ? '#138a27' :
+             ridership > 400000  ? '#90d92b' :
+             ridership > 200000   ? '#261596' :
+             ridership > 0   ? '#6960a6' :
+                      '#8f8e9c';
   }
 
   // Create the createMap function
@@ -71,14 +74,14 @@ function wholeMap (year) {
 
     var div = L.DomUtil.create('div', 'info legend'),
           M = 100000
-          ridership = [0, 2, 4, 6, 8, 10],
+          ridership = [0, 2, 4, 6, 8, 10, 20, 30, 50],
           colors =[],
       labels = [];
 
     // loop through our density intervals and generate a label with a colored square for each interval
     for (var i = 0; i < ridership.length; i++) {
       div.innerHTML +=
-        '<i style="background:' + getColor((ridership[i] + 2) * M) + '"></i> ' +
+        '<i style="background:' + getColor((ridership[i] + 1) * M) + '"></i> ' +
         + + ridership[i]/10 + "M" + (ridership[i + 1]/10 ? ' &ndash; ' + ridership[i + 1]/10 + "M" + '<br>' : '+');
     }
 
