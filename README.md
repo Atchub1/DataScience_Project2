@@ -37,5 +37,3 @@ We used D3, Javascript, Plotly and Leaflet to build our final charts and Map.
 - A stacked bar graph which represent the average ridership data for different week day types.
 
 ![Line](Images/Chart.png)
-
-![Map](Images/Map.png)
