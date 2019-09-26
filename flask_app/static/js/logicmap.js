@@ -59,8 +59,8 @@ function wholeMap (year) {
         // Create the map object with options
         var map = L.map("map", {
           center: [41.85, -87.65],
-          zoom: 10,
-          layer: [light, ridershipLayer]
+          zoom: 11,
+          layers: [light, ridershipLayer, lLine]
         });
       
         // Create a layer control, pass in the baseMaps and overlayMaps. Add the layer control to the map
