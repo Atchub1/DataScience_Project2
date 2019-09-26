@@ -29,7 +29,7 @@ We used D3, Javascript, Plotly and Leaflet to build our final charts and Map.
 ## The visualization dashboard include:
 - Chicago map with CTA Stations and lines with Ridership information and a dropdown menu to select the year. The bubbles represent the CTA stations with bubble size and color representing the ridership data.
 
-![Map](Images/Map.png)
+![CTA_Map](Images/Map.png)
 
 
 - A line chart showing total ridership data for last 10 years and a dropdown to select the station from. The station information includes the ADA accessibility and Line color information.
